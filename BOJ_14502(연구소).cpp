@@ -17,7 +17,7 @@ int dy[4] = { -1,1,0,0 };
 vector<pair<int, int>> virus;
 vector<int> safety_Zone;
 
-void copy_map(int(*a)[MAX_N], int(*b)[MAX_N])
+void CopyMap(int(*a)[MAX_N], int(*b)[MAX_N])
 {
 	for (int i = 0; i < n; i++)
 		for (int j = 0; j < m; j++)
@@ -25,11 +25,11 @@ void copy_map(int(*a)[MAX_N], int(*b)[MAX_N])
 }
 
 // BFS로 바이러스를 감염시킨다.
-void BFS_Virus()
+void BfsVirus()
 {
 	int after_Wall[MAX_N][MAX_N];
 	// 벽으로 감싼 후 상황 복사
-	copy_map(after_Wall, temp_map);
+	CopyMap(after_Wall, temp_map);
 
 	queue<pair<int, int>> q;
 	// 초기 바이러스 좌표를 큐에 넣는다
@@ -66,17 +66,18 @@ void BFS_Virus()
 		}
 	}
 
+	// 최대값만 저장한다.
 	ans = ans > safety_Size ? ans : safety_Size;
 }
 
-// x,y는 벽을 놓을 곳, cnt는 벽의 개수
-void DFS_Wall(int cnt) 
+// 벽을 쌓는 재귀함수. cnt : 벽의 개수
+void RecurWall(int cnt) 
 {
 	
 	// 벽이 3개면 안전영역의 크기 저장
 	if (cnt == 3)
 	{
-		BFS_Virus();
+		BfsVirus();
 		return;
 	}
 
@@ -90,7 +91,7 @@ void DFS_Wall(int cnt)
 				// 벽을 놓는다
 				temp_map[i][j] = 1;
 				// 벽을 한개 추가한다.
-				DFS_Wall(cnt + 1);
+				RecurWall(cnt + 1);
 				temp_map[i][j] = 0;
 			}
 		}
@@ -124,9 +125,9 @@ int main()
 		{
 			if (map[i][j] == 0)
 			{
-				copy_map(temp_map, map);
+				CopyMap(temp_map, map);
 				temp_map[i][j] = 1;
-				DFS_Wall(1);
+				RecurWall(1);
 				temp_map[i][j] = 0;
 			}
 		}
